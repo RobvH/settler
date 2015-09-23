@@ -22,6 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :parallels do |prl|
     prl.memory = 2048
     prl.cpus = 2
+    prl.update_guest_tools = true
   end
 
   # Configure Port Forwarding
