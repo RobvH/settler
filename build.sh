@@ -33,7 +33,21 @@ rm -rf .vagrant
 
 time vagrant up --provider parallels 2>&1 | tee parallels-build-output.log
 vagrant halt
-vagrant package --base `ls ~/Documents/Parallels | grep settler` --output parallels.box
+# setup some nice vars 
+SETTLER_PVM=`ls ~/Documents/Parallels | grep settler`
+PARALLELS=~/Documents/Parallels
+SETTLER=$PARALLELS/$SETTLER_PVM
+# shrink disk
+prl_disk_tool compact --hdd $SETTLER/harddisk1.hdd
+# vagrant package does not support Parallels, either
+cp Vagrantfile $PARALLELS
+pushd .
+cd $PARALLELS
+rm -f $SETTLER_PVM/*.log
+tar -czvf parallels.box ./$SETTLER_PVM ./Vagrantfile
+popd
+mv $PARALLELS/parallels.box .
+rm $PARALLELS/Vagrantfile
 
 ls -lh parallels.box
 vagrant destroy -f
